@@ -4,7 +4,8 @@ This project demonstrates a **fully automated Campus-MPLS network** using **Ansi
 It provisions routers, switches, and PE/CE edge devices to simulate a service-provider-style backbone network with campus sites connected over an MPLS core.
 
 > 🖼️ *Topology Screenshot*  
-> *(Insert image here: e.g. `![Topology Screenshot](topology.png)`)*
+> *(Insert image here: e.g. `![Topology S<img width="2058" height="1038" alt="Topology" src="https://github.com/user-attachments/assets/e73de2c0-1262-4f1b-be8c-a4452ccf7a5f" />
+creenshot](topology.png)`)*
 
 ---
 
