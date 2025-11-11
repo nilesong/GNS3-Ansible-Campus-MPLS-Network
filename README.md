@@ -160,6 +160,8 @@ Use the following file for device access details when applying the configuration
 
 ---
 
-**Author:** *Neil Ong*
+## 👤 Author
 
-https://github.com/nilesong
+**Neil Ong**  
+
+GitHub: [@nilesong](https://github.com/your-github-username)  
