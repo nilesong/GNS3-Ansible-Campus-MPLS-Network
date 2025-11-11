@@ -135,8 +135,7 @@ These confirm successful communication between VLANs and sites through the MPLS 
     ping 10.3.100.12
     ping 10.3.200.12
 
-> 📸 *Sample Ping Output Screenshot*  
-> *(Insert image here: e.g. `![Ping Test Screenshot](ping-test.png)`)*
+<img width="872" height="163" alt="Ping" src="https://github.com/user-attachments/assets/98ef182d-6a98-4f9c-86f3-6c1b0219464f" />
 
 If you want to enable **complete reachability across all network equipment** (routers and switches)  
 in addition to PC connectivity, apply the **extra BGP configurations** on **CE1** and **CE2** as shown here:  
