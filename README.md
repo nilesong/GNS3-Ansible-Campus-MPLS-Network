@@ -11,8 +11,9 @@ It provisions routers, switches, and PE/CE edge devices to simulate a service-pr
 ## 📦 Prerequisites
 
 Before starting, ensure you have:
-- GNS3 installed and configured  
-- Ansible environment set up on your automation PC  
+- GNS3 installed and configured 
+- GNS3 VM (VMWare) installed and configured 
+- Network Automation appliance set up on your GNS3
 - Correct device images for routers and switches  
 
 You can find the full list of required GNS3 images here:  
