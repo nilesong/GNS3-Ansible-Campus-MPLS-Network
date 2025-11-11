@@ -151,7 +151,7 @@ Use the following file for device access details when applying the configuration
 
 - This project serves as a **demonstration of automated network provisioning and MPLS L3VPN deployment** using Ansible and GNS3.  
 - Designed to showcase **infrastructure automation, multi-tier campus design, and service provider integration** in a simulated environment.  
-- Implements **MPLS Layer 3 VPN (L3VPN)** with dynamic BGP and OSPF configuration across campus and core networks.  
+- Implements **MPLS Layer 3 VPN (L3VPN)** with MP-BGP and OSPF configuration across campus and core networks.  
 - Ensure all device images, IP addressing, and topology settings are verified before execution.  
 - Tested with **GNS3 version 2.2.54** and **Ansible version 2.9.6**.
 
