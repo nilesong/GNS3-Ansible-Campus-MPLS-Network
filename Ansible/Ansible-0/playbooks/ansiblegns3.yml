@@ -1,0 +1,192 @@
+---
+- name: Manage PE MPLS
+  hosts: PE-routers
+  gather_facts: false
+  connection: network_cli
+  vars_files:
+    - gns3_vars.yml
+
+  tasks:
+    - name: Configure Hostname
+      ios_config:
+        lines:
+          - hostname {{ inventory_hostname }}
+      register: print_output
+    -  debug: var=print_output
+
+    - name: Configure Loopback
+      ios_config:
+        parents: interface {{ item.key }}
+        lines:
+          - ip address {{ item.value.ip }} {{ item.value.subnet }}
+      loop:	"{{ equipment.routers.PErouters[inventory_hostname].interfaces.loopback | dict2items }}"
+      register: print_output
+    -  debug: var=print_output
+
+    - name: Configure Layer 3 Interfaces
+      ios_config:
+        parents: interface {{ item.key }}
+        lines:
+          - description {{ item.value.desc }}
+          - ip address {{ item.value.ip }} {{ item.value.subnet }}
+          - mpls ip
+          - no shut
+      loop:	"{{ equipment.routers.PErouters[inventory_hostname].interfaces.layer3 | dict2items }}"
+      register: print_output
+    -  debug: var=print_output
+
+    - name: Configure OSPF Router ID
+      ios_config:
+        parents: router ospf 1
+        lines:
+          - router-id {{ equipment.routers.PErouters[inventory_hostname].interfaces.loopback.loopback0.ip }}
+      register: print_output
+    -  debug: var=print_output
+
+    - name: Configure OSPF
+      ios_config:
+        parents: router ospf 1
+        lines:
+          - network {{ item.value.ip }} {{ item.value.wildcard }} area 0
+      loop:	"{{ equipment.routers.PErouters[inventory_hostname].ospf.network | dict2items }}"
+      register: print_output
+    -  debug: var=print_output
+
+    - name: Configure MPLS
+      ios_config:
+        lines:
+          - mpls label protocol ldp
+          - mpls ldp router-id loopback0 force
+      register: print_output
+    -  debug: var=print_output
+
+    - name: Configure L3VPN
+      ios_config:
+        parents: ip vrf {{ item.key }}
+        lines:
+          - rd {{ item.value.rd }}
+          - route-target export {{ item.value.rd }}
+          - route-target import {{ item.value.rd }}
+      loop:	"{{ equipment.routers.PErouters[inventory_hostname].L3VPN | dict2items }}"
+      register: print_output
+    -  debug: var=print_output
+
+    - name: Configure BGP
+      ios_config:
+        parents: router bgp 65000
+        lines:
+          - neighbor {{ item.value.ip }} remote-as {{ item.value.asNo }}
+          - neighbor {{ item.value.ip }} update-source loopback0
+          - neighbor {{ item.value.ip }} next-hop-self
+      loop:	"{{ equipment.routers.PErouters[inventory_hostname].bgp.neighbor.vpnv4 | dict2items }}"
+      register: print_output
+    -  debug: var=print_output
+
+    - name: Configure MP-BGP VPNv4 Neighbors
+      ios_config:
+        parents: 
+          - router bgp 65000
+          - address-family vpnv4
+        lines:
+          - neighbor {{ item.value.ip }} activate
+          - neighbor {{ item.value.ip }} send-community extended
+      loop:	"{{ equipment.routers.PErouters[inventory_hostname].bgp.neighbor.vpnv4 | dict2items }}"
+      register: print_output
+    -  debug: var=print_output
+
+    - name: Configure MP-BGP IPv4 Neighbors
+      ios_config:
+        parents: 
+          - router bgp 65000
+          - address-family ipv4 vrf {{ item.value.name }}
+        lines:
+          - neighbor {{ item.value.ip }} remote-as {{ item.value.asNo }}
+          - neighbor {{ item.value.ip }} activate
+      loop:	"{{ equipment.routers.PErouters[inventory_hostname].bgp.neighbor.ipv4 | dict2items }}"
+      register: print_output
+    -  debug: var=print_output
+
+    - name: Configure MP-BGP IPv4 Networks
+      ios_config:
+        parents: 
+          - router bgp 65000
+          - address-family ipv4 vrf {{ item.value.name }}
+        lines:
+          - network {{ item.value.ip }} mask {{ item.value.subnet }}
+      loop:	"{{ equipment.routers.PErouters[inventory_hostname].bgp.network.ipv4 | dict2items }}"
+      register: print_output
+    -  debug: var=print_output
+
+    - name: Configure Interfaces facing CE
+      ios_config:
+        parents: interface {{ item.key }}
+        lines:
+          - description {{ item.value.desc }}
+          - ip vrf forwarding {{ item.value.name }}
+          - ip address {{ item.value.ip }} {{ item.value.subnet }}
+          - no shut
+      loop:	"{{ equipment.routers.PErouters[inventory_hostname].interfaces.PECE | dict2items }}"
+      register: print_output
+    -  debug: var=print_output
+
+- name: Manage P MPLS
+  hosts: P-routers
+  gather_facts: false
+  connection: network_cli
+  vars_files:
+    - gns3_vars.yml
+
+  tasks:
+    - name: Configure Hostname
+      ios_config:
+        lines:
+          - hostname {{ inventory_hostname }}
+      register: print_output
+    -  debug: var=print_output
+
+    - name: Configure Loopback
+      ios_config:
+        parents: interface {{ item.key }}
+        lines:
+          - ip address {{ item.value.ip }} {{ item.value.subnet }}
+      loop:	"{{ equipment.routers.Prouters[inventory_hostname].interfaces.loopback | dict2items }}"
+      register: print_output
+    -  debug: var=print_output
+
+    - name: Configure Layer 3 Interfaces
+      ios_config:
+        parents: interface {{ item.key }}
+        lines:
+          - description {{ item.value.desc }}
+          - ip address {{ item.value.ip }} {{ item.value.subnet }}
+          - mpls ip
+          - no shut
+      loop:	"{{ equipment.routers.Prouters[inventory_hostname].interfaces.layer3 | dict2items }}"
+      register: print_output
+    -  debug: var=print_output
+
+    - name: Configure OSPF Router ID
+      ios_config:
+        parents: router ospf 1
+        lines:
+          - router-id {{ equipment.routers.Prouters[inventory_hostname].interfaces.loopback.loopback0.ip }}
+      register: print_output
+    -  debug: var=print_output
+
+    - name: Configure OSPF
+      ios_config:
+        parents: router ospf 1
+        lines:
+          - network {{ item.value.ip }} {{ item.value.wildcard }} area 0
+      loop:	"{{ equipment.routers.Prouters[inventory_hostname].ospf.network | dict2items }}"
+      register: print_output
+    -  debug: var=print_output
+
+    - name: Configure MPLS
+      ios_config:
+        lines:
+          - mpls label protocol ldp
+          - mpls ldp router-id loopback0 force
+      register: print_output
+    -  debug: var=print_output
+    

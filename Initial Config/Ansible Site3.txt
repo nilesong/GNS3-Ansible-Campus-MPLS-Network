@@ -1,0 +1,359 @@
+Ansible-3
+nano hosts
+[access]
+Acc-SW5
+Acc-SW6
+
+[distribution]
+Dist-SW5
+Dist-SW6
+
+[core]
+Core-R3
+Core-R4
+
+[edge]
+CE2
+
+
+[access:vars]
+ansible_connection=network_cli
+ansible_network_os=ios
+ansible_user=management
+ansible_password=gns3
+ansible_become=yes
+ansible_become_method=enable
+ansible_become_password=gns3
+
+[distribution:vars]
+ansible_connection=network_cli
+ansible_network_os=ios
+ansible_user=management
+ansible_password=gns3
+ansible_become=yes
+ansible_become_method=enable
+ansible_become_password=gns3
+
+[core:vars]
+ansible_connection=network_cli
+ansible_network_os=ios
+ansible_user=management
+ansible_password=gns3
+ansible_become=yes
+ansible_become_method=enable
+ansible_become_password=gns3
+
+[edge:vars]
+ansible_connection=network_cli
+ansible_network_os=ios
+ansible_user=management
+ansible_password=gns3
+ansible_become=yes
+ansible_become_method=enable
+ansible_become_password=gns3
+
+
+nano /etc/hosts
+127.0.1.1       NetworkAutomation-2
+127.0.0.1       localhost
+::1     localhost ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+
+10.2.99.2 Acc-SW5
+10.2.99.3 Acc-SW6
+10.2.99.4 Dist-SW5
+10.2.99.5 Dist-SW6
+10.2.99.6 Core-R3
+10.2.99.7 Core-R4
+10.2.99.8 CE2
+
+
+nano /etc/network/interfaces
+#
+# This is a sample network config, please uncomment lines to configure the network
+#
+
+# Uncomment this line to load custom interface files
+# source /etc/network/interfaces.d/*
+
+# Static config for eth0
+auto eth0
+iface eth0 inet static
+        address 10.2.99.100
+        netmask 255.255.255.0
+        gateway 10.2.99.1
+#       up echo nameserver 192.168.0.1 > /etc/resolv.conf
+
+# DHCP config for eth0
+#auto eth0
+#iface eth0 inet dhcp
+#       hostname NetworkAutomation-3
+
+
+nano ansible.cfg
+[defaults]
+inventory = ./hosts
+host_key_checking = false
+timeout = 5
+
+
+Management-2
+en
+conf t
+hostname Management-2
+vlan 99
+name Management
+exit
+int vlan 99
+ip address 10.2.99.1 255.255.255.0
+no shut
+int g0/0
+description Manage Acc-SW5
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 99
+int g0/1
+description Manage Acc-SW6
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 99
+int g0/2
+description Manage Dist-SW5
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 99
+int g0/3
+description Manage Dist-SW6
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 99
+int g1/0
+description Manage Core-R3
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 99
+switchport trunk native vlan 99
+int g1/1
+description Manage Core-R4
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 99
+switchport trunk native vlan 99
+int g1/2
+description Manage CE2
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 99
+switchport trunk native vlan 99
+int g3/3
+switchport mode access
+switchport access vlan 99
+spanning-tree portfast
+spanning-tree bpduguard enable
+exit
+username management secret gns3
+enable secret gns3
+ip domain-name gns3mgmt.com
+crypto key gen rsa mod 2048
+ip ssh ver 2
+ip scp server enable
+line vty 0 15
+transport input ssh
+login local
+exit
+end
+copy run start
+
+Acc-SW5
+en
+conf t
+hostname Acc-SW5
+vlan 99
+name Management
+exit
+int vlan 99
+ip address 10.2.99.2 255.255.255.0
+no shut
+int g3/3
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 99
+exit
+username management secret gns3
+enable secret gns3
+ip domain-name gns3mgmt.com
+crypto key gen rsa mod 2048
+ip ssh ver 2
+ip scp server enable
+line vty 0 15
+transport input ssh
+login local
+exit
+end
+copy run start
+
+Acc-SW6
+en
+conf t
+hostname Acc-SW6
+vlan 99
+name Management
+exit
+int vlan 99
+ip address 10.2.99.3 255.255.255.0
+no shut
+int g3/3
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 99
+exit
+username management secret gns3
+enable secret gns3
+ip domain-name gns3mgmt.com
+crypto key gen rsa mod 2048
+ip ssh ver 2
+ip scp server enable
+line vty 0 15
+transport input ssh
+login local
+exit
+end
+copy run start
+
+Dist-SW5
+en
+conf t
+hostname Dist-SW5
+vlan 99
+name Management
+exit
+int vlan 99
+ip address 10.2.99.4 255.255.255.0
+no shut
+int g3/3
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 99
+exit
+username management secret gns3
+enable secret gns3
+ip domain-name gns3mgmt.com
+crypto key gen rsa mod 2048
+ip ssh ver 2
+ip scp server enable
+line vty 0 15
+transport input ssh
+login local
+exit
+end
+copy run start
+
+Dist-SW6
+en
+conf t
+hostname Dist-SW6
+vlan 99
+name Management
+exit
+int vlan 99
+ip address 10.2.99.5 255.255.255.0
+no shut
+int g3/3
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 99
+exit
+username management secret gns3
+enable secret gns3
+ip domain-name gns3mgmt.com
+crypto key gen rsa mod 2048
+ip ssh ver 2
+ip scp server enable
+line vty 0 15
+transport input ssh
+login local
+exit
+end
+copy run start
+
+Core-R3
+en
+conf t
+hostname Core-R3
+int g0/5
+ip address 10.2.99.6 255.255.255.0
+no shut
+exit
+username management secret gns3
+enable secret gns3
+ip domain-name gns3mgmt.com
+crypto key gen rsa mod 2048
+ip ssh ver 2
+ip scp server enable
+line vty 0 15
+transport input ssh
+login local
+exit
+end
+copy run start
+
+Core-R4
+en
+conf t
+hostname Core-R4
+int g0/5
+ip address 10.2.99.7 255.255.255.0
+no shut
+exit
+username management secret gns3
+enable secret gns3
+ip domain-name gns3mgmt.com
+crypto key gen rsa mod 2048
+ip ssh ver 2
+ip scp server enable
+line vty 0 15
+transport input ssh
+login local
+exit
+end
+copy run start
+
+CE2
+en
+conf t
+hostname CE2
+int g0/5
+ip address 10.2.99.8 255.255.255.0
+no shut
+exit
+username management secret gns3
+enable secret gns3
+ip domain-name gns3mgmt.com
+crypto key gen rsa mod 2048
+ip ssh ver 2
+ip scp server enable
+line vty 0 15
+transport input ssh
+login local
+exit
+end
+copy run start
+
+PC-V100-5
+ip 10.3.100.11 255.255.255.0 10.3.100.1
+save
+
+PC-V200-5
+ip 10.3.200.11 255.255.255.0 10.3.200.1
+save
+
+PC-V100-6
+ip 10.3.100.12 255.255.255.0 10.3.100.1
+save
+
+PC-V200-6
+ip 10.3.200.12 255.255.255.0 10.3.200.1
+save

@@ -1,0 +1,208 @@
+Ansible-0
+nano hosts
+[PE-routers]
+PE1
+PE2
+
+[P-routers]
+P1
+P2
+
+
+[PE-routers:vars]
+ansible_connection=network_cli
+ansible_network_os=ios
+ansible_user=management
+ansible_password=gns3
+ansible_become=yes
+ansible_become_method=enable
+ansible_become_password=gns3
+
+[P-routers:vars]
+ansible_connection=network_cli
+ansible_network_os=ios
+ansible_user=management
+ansible_password=gns3
+ansible_become=yes
+ansible_become_method=enable
+ansible_become_password=gns3
+
+nano /etc/hosts
+127.0.1.1       NetworkAutomation-2
+127.0.0.1       localhost
+::1     localhost ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+
+10.0.99.2 PE1
+10.0.99.3 PE2
+10.0.99.4 P1
+10.0.99.5 P2
+
+
+nano /etc/network/interfaces
+#
+# This is a sample network config, please uncomment lines to configure the network
+#
+
+# Uncomment this line to load custom interface files
+# source /etc/network/interfaces.d/*
+
+# Static config for eth0
+auto eth0
+iface eth0 inet static
+        address 10.0.99.100
+        netmask 255.255.255.0
+        gateway 10.0.99.1
+#       up echo nameserver 192.168.0.1 > /etc/resolv.conf
+
+# DHCP config for eth0
+#auto eth0
+#iface eth0 inet dhcp
+#       hostname NetworkAutomation-2
+
+
+nano ansible.cfg
+[defaults]
+inventory = ./hosts
+host_key_checking = false
+timeout = 5
+
+Management-0
+en
+conf t
+hostname Management-0
+vlan 99
+name Management
+exit
+int vlan 99
+ip address 10.0.99.1 255.255.255.0
+no shut
+int g0/0
+description Manage P1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 99
+switchport trunk native vlan 99
+int g0/1
+description Manage P2
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 99
+switchport trunk native vlan 99
+int g0/2
+description Manage PE1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 99
+switchport trunk native vlan 99
+int g0/3
+description Manage PE2
+switchport trunk encapsulation dot1q
+switchport mode trunk
+switchport trunk allowed vlan 99
+switchport trunk native vlan 99
+int g3/3
+switchport mode access
+switchport access vlan 99
+spanning-tree portfast
+spanning-tree bpduguard enable
+exit
+username management secret gns3
+enable secret gns3
+ip domain-name gns3mgmt.com
+crypto key gen rsa mod 2048
+ip ssh ver 2
+ip scp server enable
+line vty 0 15
+transport input ssh
+login local
+exit
+end
+copy run start
+
+PE1
+en
+conf t
+hostname PE1
+int g0/5
+ip address 10.0.99.2 255.255.255.0
+no shut
+exit
+username management secret gns3
+enable secret gns3
+ip domain-name gns3mgmt.com
+crypto key gen rsa mod 2048
+ip ssh ver 2
+ip scp server enable
+line vty 0 15
+transport input ssh
+login local
+exit
+end
+copy run start
+
+PE2
+en
+conf t
+hostname PE2
+int g0/5
+ip address 10.0.99.3 255.255.255.0
+no shut
+exit
+username management secret gns3
+enable secret gns3
+ip domain-name gns3mgmt.com
+crypto key gen rsa mod 2048
+ip ssh ver 2
+ip scp server enable
+line vty 0 15
+transport input ssh
+login local
+exit
+end
+copy run start
+
+P1
+en
+conf t
+hostname P1
+int g0/5
+ip address 10.0.99.4 255.255.255.0
+no shut
+exit
+username management secret gns3
+enable secret gns3
+ip domain-name gns3mgmt.com
+crypto key gen rsa mod 2048
+ip ssh ver 2
+ip scp server enable
+line vty 0 15
+transport input ssh
+login local
+exit
+end
+copy run start
+
+P2
+en
+conf t
+hostname P2
+int g0/5
+ip address 10.0.99.5 255.255.255.0
+no shut
+exit
+username management secret gns3
+enable secret gns3
+ip domain-name gns3mgmt.com
+crypto key gen rsa mod 2048
+ip ssh ver 2
+ip scp server enable
+line vty 0 15
+transport input ssh
+login local
+exit
+end
+copy run start

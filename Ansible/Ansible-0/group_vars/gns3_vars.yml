@@ -1,0 +1,160 @@
+equipment:
+  routers:
+    PErouters:
+      PE1:
+        interfaces:
+          layer3:
+            g0/1:
+              desc: "PE1 to P1"
+              ip: "10.0.1.1"
+              subnet: "255.255.255.252"
+            g0/2:
+              desc: "PE1 to P2"
+              ip: "10.0.1.5"
+              subnet: "255.255.255.252"
+          loopback:
+            loopback0:
+              ip: "10.254.0.1"
+              subnet: "255.255.255.255"
+          PECE:
+            g0/0:
+              desc: "PE1 to CE1"
+              name: "L3VPN_Sites"
+              ip: "172.16.1.1"
+              subnet: "255.255.255.252"
+        ospf:
+          network:
+            network1:
+              ip: "10.254.0.1"
+              wildcard: "0.0.0.0"
+            network2:
+              ip: "10.0.1.0"
+              wildcard: "0.0.0.3"
+            network3:
+              ip: "10.0.1.4"
+              wildcard: "0.0.0.3"
+        bgp:
+          neighbor:
+            vpnv4:
+              neighbor1:
+                ip: "10.254.0.2"
+                asNo: 65000
+            ipv4:
+              neighbor1:
+                name: "L3VPN_Sites"
+                ip: "172.16.1.2"
+                asNo: 65001
+          network:
+            ipv4:
+              network1:
+                name: "L3VPN_Sites"
+                ip: "172.16.1.0"
+                subnet: "255.255.255.252"
+        L3VPN:
+          L3VPN_Sites:
+            rd: "65000:100"
+      PE2:
+        interfaces:
+          layer3:
+            g0/1:
+              desc: "PE2 to P1"
+              ip: "10.0.1.9"
+              subnet: "255.255.255.252"
+            g0/2:
+              desc: "PE2 to P2"
+              ip: "10.0.1.13"
+              subnet: "255.255.255.252"
+          loopback:
+            loopback0:
+              ip: "10.254.0.2"
+              subnet: "255.255.255.255"
+          PECE:
+            g0/0:
+              desc: "PE2 to CE2"
+              name: "L3VPN_Sites"
+              ip: "172.16.2.1"
+              subnet: "255.255.255.252"
+        ospf:
+          network:
+            network1:
+              ip: "10.254.0.2"
+              wildcard: "0.0.0.0"
+            network2:
+              ip: "10.0.1.8"
+              wildcard: "0.0.0.3"
+            network3:
+              ip: "10.0.1.12"
+              wildcard: "0.0.0.3"
+        bgp:
+          neighbor:
+            vpnv4:
+              neighbor1:
+                ip: "10.254.0.1"
+                asNo: 65000
+            ipv4:
+              neighbor1:
+                name: "L3VPN_Sites"
+                ip: "172.16.2.2"
+                asNo: 65002
+          network:
+            ipv4:
+              network1:
+                name: "L3VPN_Sites"
+                ip: "172.16.2.0"
+                subnet: "255.255.255.252"
+        L3VPN:
+          L3VPN_Sites:
+            rd: "65000:100"
+    Prouters:
+      P1:
+        interfaces:
+          layer3:
+            g0/0:
+              desc: "P1 to PE1"
+              ip: "10.0.1.2"
+              subnet: "255.255.255.252"
+            g0/1:
+              desc: "P1 to PE2"
+              ip: "10.0.1.10"
+              subnet: "255.255.255.252"
+          loopback:
+            loopback0:
+              ip: "10.254.0.3"
+              subnet: "255.255.255.255"
+        ospf:
+          network:
+            network1:
+              ip: "10.254.0.3"
+              wildcard: "0.0.0.0"
+            network2:
+              ip: "10.0.1.0"
+              wildcard: "0.0.0.3"
+            network3:
+              ip: "10.0.1.8"
+              wildcard: "0.0.0.3"
+      P2:
+        interfaces:
+          layer3:
+            g0/0:
+              desc: "P2 to PE1"
+              ip: "10.0.1.6"
+              subnet: "255.255.255.252"
+            g0/1:
+              desc: "P2 to PE2"
+              ip: "10.0.1.14"
+              subnet: "255.255.255.252"
+          loopback:
+            loopback0:
+              ip: "10.254.0.4"
+              subnet: "255.255.255.255"
+        ospf:
+          network:
+            network1:
+              ip: "10.254.0.4"
+              wildcard: "0.0.0.0"
+            network2:
+              ip: "10.0.1.4"
+              wildcard: "0.0.0.3"
+            network3:
+              ip: "10.0.1.12"
+              wildcard: "0.0.0.3"
