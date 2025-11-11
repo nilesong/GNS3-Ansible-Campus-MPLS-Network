@@ -1,0 +1,4 @@
+GNS3 Appliances:
+Network Automation
+Cisco IOSv: vios-adventerprisek9-m.spa.159-3.m6.qcow2
+Cisco IOSvL2: vios_l2-adventerprisek9-m.ssa.high_iron_20200929.qcow2
