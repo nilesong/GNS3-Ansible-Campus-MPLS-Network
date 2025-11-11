@@ -25,7 +25,7 @@ You can find the full list of required GNS3 images here:
 
 ### Option 1 — For Ansible Automation
 Import the following project file:
-👉 [`Campus-MPLS Network (For Ansible Automation).gns3project`](./Campus-MPLS Network (For Ansible Automation).gns3project)
+👉 [`Campus-MPLS Network (For Ansible Automation).gns3project`](./Campus-MPLS%20Network%20(For%20Ansible%20Automation).gns3project)
 
 Because of GNS3 export limitations, **the Ansible PCs are only partially preconfigured and requires manual setup before automation**.
 Follow the steps below before executing the playbook.
@@ -45,7 +45,9 @@ Follow the steps below before executing the playbook.
 
    Copy the contents from this repository file:  
    Ansible-0: [`ansible.cfg`](./Ansible/Ansible-0/ansible.cfg)
+
    Ansible-1: [`ansible.cfg`](./Ansible/Ansible-1/ansible.cfg)
+
    Ansible-3: [`ansible.cfg`](./Ansible/Ansible-3/ansible.cfg)
 
 3. Open and configure the **main playbook file**:
@@ -53,18 +55,22 @@ Follow the steps below before executing the playbook.
        nano ansiblegns3.yml
 
    Copy the contents from this repository file:  
-   Ansible-0: [`ansible.cfg`](./Ansible/Ansible-0/playbooks/ansiblegns3.yml)
-   Ansible-1: [`ansible.cfg`](./Ansible/Ansible-1/playbooks/ansiblegns3.yml)
-   Ansible-3: [`ansible.cfg`](./Ansible/Ansible-3/playbooks/ansiblegns3.yml)
+   Ansible-0: [`ansiblegns3.yml`](./Ansible/Ansible-0/playbooks/ansiblegns3.yml)
+
+   Ansible-1: [`ansiblegns3.yml`](./Ansible/Ansible-1/playbooks/ansiblegns3.yml)
+
+   Ansible-3: [`ansiblegns3.yml`](./Ansible/Ansible-3/playbooks/ansiblegns3.yml)
 
 4. Open and configure the **variables file** for device information:
 
        nano gns3_vars.yml
 
    Copy the contents from this repository file:  
-   Ansible-0: [`ansible.cfg`](./Ansible/Ansible-0/group_vars/gns3_vars.yml)
-   Ansible-1: [`ansible.cfg`](./Ansible/Ansible-1/group_vars/gns3_vars.yml)
-   Ansible-3: [`ansible.cfg`](./Ansible/Ansible-3/group_vars/gns3_vars.yml)
+   Ansible-0: [`gns3_vars.yml`](./Ansible/Ansible-0/group_vars/gns3_vars.yml)
+
+   Ansible-1: [`gns3_vars.yml`](./Ansible/Ansible-1/group_vars/gns3_vars.yml)
+
+   Ansible-3: [`gns3_vars.yml`](./Ansible/Ansible-3/group_vars/gns3_vars.yml)
 
 After completing these files, save and exit each (`Ctrl + O`, then `Ctrl + X`).
 
@@ -75,7 +81,7 @@ If you want to review the **initial configuration for all network devices**, it�
 
 ### Option 2 — Preconfigured and Ready for Testing
 If you prefer a ready-to-use network without running Ansible, simply import:
-👉 [`Campus-MPLS Network (Configured).gns3project`](./Campus-MPLS Network (Configured).gns3project)
+👉 [`Campus-MPLS Network (Configured).gns3project`](./Campus-MPLS%20Network%20(Configured).gns3project)
 
 ---
 
