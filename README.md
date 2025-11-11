@@ -22,91 +22,142 @@ You can find the full list of required GNS3 images here:
 
 ## ⚙️ Setup
 
-Because of GNS3 export limitations, **the Ansible PC requires manual setup before automation**.
+### Option 1 — For Ansible Automation
+Import the following project file:
+👉 [`Campus-MPLS Network (For Ansible Automation).gns3project`](./Campus-MPLS Network (For Ansible Automation).gns3project)
 
-1. On your Ansible PC, open the setup file:
+Because of GNS3 export limitations, **the Ansible PCs are only partially preconfigured and requires manual setup before automation**.
+Follow the steps below before executing the playbook.
+
+1. Open and configure the **hosts** inventory file:
+
+       nano hosts
+
+   Copy the contents from this repository file:  
+   Ansible-0: [`hosts`](./Ansible/Ansible-0/hosts)
+   Ansible-1: [`hosts`](./Ansible/Ansible-1/hosts)
+   Ansible-3: [`hosts`](./Ansible/Ansible-3/hosts)
+
+2. Open and configure the **Ansible configuration file**:
+
+       nano ansible.cfg
+
+   Copy the contents from this repository file:  
+   Ansible-0: [`ansible.cfg`](./Ansible/Ansible-0/ansible.cfg)
+   Ansible-1: [`ansible.cfg`](./Ansible/Ansible-1/ansible.cfg)
+   Ansible-3: [`ansible.cfg`](./Ansible/Ansible-3/ansible.cfg)
+
+3. Open and configure the **main playbook file**:
 
        nano ansiblegns3.yml
 
-2. Copy the contents from this repository file:  
-   👉 [`ansiblegns3.yml`](./ansiblegns3.yml)
+   Copy the contents from this repository file:  
+   Ansible-0: [`ansible.cfg`](./Ansible/Ansible-0/playbooks/ansiblegns3.yml)
+   Ansible-1: [`ansible.cfg`](./Ansible/Ansible-1/playbooks/ansiblegns3.yml)
+   Ansible-3: [`ansible.cfg`](./Ansible/Ansible-3/playbooks/ansiblegns3.yml)
 
-3. Save and exit (`Ctrl + O`, then `Ctrl + X`).
+4. Open and configure the **variables file** for device information:
+
+       nano gns3_vars.yml
+
+   Copy the contents from this repository file:  
+   Ansible-0: [`ansible.cfg`](./Ansible/Ansible-0/group_vars/gns3_vars.yml)
+   Ansible-1: [`ansible.cfg`](./Ansible/Ansible-1/group_vars/gns3_vars.yml)
+   Ansible-3: [`ansible.cfg`](./Ansible/Ansible-3/group_vars/gns3_vars.yml)
+
+After completing these files, save and exit each (`Ctrl + O`, then `Ctrl + X`).
 
 If you want to review the **initial configuration for all network devices**, it’s available here:  
-👉 [Initial Configurations Folder](./initial-configs)
+👉 [Initial Configurations Folder](./Initial%20Config)
 
-*(Note: These are already preconfigured except for the Ansible PC.)*
+*(Note: These are already preconfigured except for the Ansible PCs)*
+
+### Option 2 — Preconfigured and Ready for Testing
+If you prefer a ready-to-use network without running Ansible, simply import:
+👉 [`Campus-MPLS Network (Configured).gns3project`](./Campus-MPLS Network (Configured).gns3project)
 
 ---
 
 ## 🚀 Automation Execution
 
-Once setup is complete, you can execute the Ansible playbook to automate the network configuration.
+> ⚠️ **Important:**  
+> Execute the following command on **Ansible-0**, **Ansible-1**, and **Ansible-3** nodes only.
 
     ansible-playbook ansiblegns3.yml
 
-Ansible will automatically push all necessary configurations to your devices according to the definitions in `gns3_vars.yml` and inventory files.
+---
 
-This playbook configures:
-- Core MPLS infrastructure  
-- PE–P and P–P label distribution  
-- VRF instances and RD/RT assignments for **L3VPN**  
-- CE–PE BGP peering for customer routes  
+### 🧠 What This Playbook Configures
+
+This playbook builds a complete **Campus + MPLS** environment featuring both enterprise and service-provider elements.
+
+#### 🏫 Campus Network Setup
+- Three-tier design: **Access → Distribution → Core**
+- **Distribution switches** run **HSRP** for VLAN SVI redundancy (load-balanced per VLAN)
+- **Dist–Dist** links use **Layer 3 EtherChannel** interfaces (with IP addressing)
+- **Dist–Dist**, **Dist–Core**, and **Core–Core** all run **OSPF** for internal routing
+- **PCs** are segregated into VLANs for different sites:
+  - **Site 1:**  
+    - `VLAN100` → `10.1.100.x`  
+    - `VLAN200` → `10.1.200.x`
+  - **Site 2:**  
+    - `VLAN100` → `10.2.100.x`  
+    - `VLAN200` → `10.2.200.x`
+  - **Site 3:**  
+    - `VLAN100` → `10.3.100.x`  
+    - `VLAN200` → `10.3.200.x`
+
+#### 🌐 MPLS Core & VPN Setup
+- Implements **MPLS L3VPN** for multi-site routing isolation  
+- Autonomous Systems:
+  - Site 1 & Site 2 → **AS65001**
+  - Site 3 → **AS65002**
+  - MPLS Core → **AS65000**
+- Configures VRFs, Route Distinguishers (RDs), and Route Targets (RTs) for CE–PE separation  
+- Automates BGP peering across MPLS and customer edges
 
 ---
 
-## 🧪 Testing
+## 🧪 Testing & Additional Configurations
 
-To verify connectivity and configuration, you can perform a simple ping test between CE devices or across VRFs.
+To verify network connectivity, perform the following **ping tests from `PC-V100-1`**.  
+These confirm successful communication between VLANs and sites through the MPLS backbone.
 
-Example command:
-
-    ping 10.0.1.2
-
-If you want full reachability across the entire MPLS VPN, **add the following BGP configuration lines** on both **CE1** and **CE2**:
-
-    router bgp <ASN>
-      network <prefix> mask <subnet-mask>
-
-*(Adjust `<ASN>`, `<prefix>`, and `<subnet-mask>` based on your lab’s addressing.)*
-
-Refer to the credentials file here for all login information:  
-👉 [`credentials.txt`](./credentials.txt)
+    ping 10.1.200.11
+    ping 10.1.100.12
+    ping 10.1.200.12
+    ping 10.2.100.11
+    ping 10.2.200.11
+    ping 10.2.100.12
+    ping 10.2.200.12
+    ping 10.3.100.11
+    ping 10.3.200.11
+    ping 10.3.100.12
+    ping 10.3.200.12
 
 > 📸 *Sample Ping Output Screenshot*  
 > *(Insert image here: e.g. `![Ping Test Screenshot](ping-test.png)`)*
 
-**L3VPN Verification:**  
-You can verify VRF connectivity and label bindings using the following commands on PE routers:
+If you want to enable **complete reachability across all network equipment** (routers and switches)  
+in addition to PC connectivity, apply the **extra BGP configurations** on **CE1** and **CE2** as shown here:  
+👉 [`CE BGP Additional.txt`](./CE%20BGP%20Additional.txt)
 
-    show ip vrf
-    show ip route vrf <vrf-name>
-    show mpls forwarding-table
-    show bgp vpnv4 all summary
+Use the following file for device access details when applying the configuration:  
+👉 [`credentials.txt`](./CLI/credentials.txt)
 
----
-
-## 🧩 Recommended Additions
-
-You may consider adding the following sections later (these are commonly found in GitHub READMEs):
-
-- **📁 Repository Structure:** Brief explanation of folder contents  
-- **📚 Documentation:** Link to detailed setup or topology guide  
-- **🧰 Troubleshooting:** Common errors (e.g. permission or export issues)  
-- **📜 License:** Specify license type (MIT, GPL, etc.)  
-- **🤝 Contributing:** Instructions for collaborators or PRs  
 
 ---
 
 ## 🧠 Notes
 
-- This project is designed for **educational and lab use** only.  
-- Implements **MPLS Layer 3 VPN (L3VPN)** with Ansible-driven provisioning.  
-- Always verify IP addressing, image names, and topology consistency before executing automation.  
-- Tested with GNS3 version *(add version here)* and Ansible version *(add version here)*.
+- This project serves as a **demonstration of automated network provisioning and MPLS L3VPN deployment** using Ansible and GNS3.  
+- Designed to showcase **infrastructure automation, multi-tier campus design, and service provider integration** in a simulated environment.  
+- Implements **MPLS Layer 3 VPN (L3VPN)** with dynamic BGP and OSPF configuration across campus and core networks.  
+- Ensure all device images, IP addressing, and topology settings are verified before execution.  
+- Tested with **GNS3 version 2.2.54** and **Ansible version 2.9.6**.
+
 
 ---
 
-**Author:** *Your Name*  
-📧 *Optional: your contact or GitH*
+**Author:** *Neil Ong*
+https://github.com/nilesong
