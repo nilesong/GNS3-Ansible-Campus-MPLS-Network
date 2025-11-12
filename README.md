@@ -118,7 +118,7 @@ This playbook builds a complete **Campus + MPLS** environment featuring both ent
 
 ---
 
-## 🧪 Testing & Additional Configurations
+## 💻 Testing & Additional Configurations
 
 To verify network connectivity, perform the following **ping tests from `PC-V100-1`**.  
 These confirm successful communication between VLANs and sites through the MPLS backbone.
