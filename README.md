@@ -139,7 +139,7 @@ These confirm successful communication between VLANs and sites through the MPLS 
 
 If you want to enable **complete reachability across all network equipment** (routers and switches)  
 in addition to PC connectivity, apply the **extra BGP configurations** on **CE1** and **CE2** as shown here:  
-👉 [`CE BGP Additional.txt`](./CE%20BGP%20Additional.txt)
+👉 [`CE BGP Additional.txt`](./CLI/CE%20BGP.txt)
 
 Use the following file for device access details when applying the configuration:  
 👉 [`credentials.txt`](./CLI/credentials.txt)
